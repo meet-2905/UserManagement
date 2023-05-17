@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using UserManagement_MVC.Models;
 using UserManagement_MVC.Models.Responses;
@@ -11,9 +10,11 @@ namespace UserManagement_MVC.Controllers
     public class UserController : Controller
     {
         private readonly IUserService _userService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, IHttpContextAccessor httpContextAccessor)
         {
+            _httpContextAccessor = httpContextAccessor;
             _userService = userService;
         }
 
@@ -31,9 +32,8 @@ namespace UserManagement_MVC.Controllers
 
             if(registerUserResponse.IsSuccess) 
             {
-                return Redirect("~/User/Index");
+                return Redirect("~/User/Login");
             }
-
             return View();
         }
 
@@ -49,15 +49,17 @@ namespace UserManagement_MVC.Controllers
         {
             LoginUserResponse loginUserResponse= await _userService.Login(loginUserModel);
 
-            if(loginUserResponse.IsSuccess)
+            if (loginUserResponse.IsSuccess)
             {
-                HttpContext.Session.SetString("JWToken", loginUserResponse.jwtToken);
+                //HttpContext.Session.SetString("JWToken", loginUserResponse.jwtToken);
+                _httpContextAccessor.HttpContext.Session.SetString("JWToken", loginUserResponse.jwtToken);
 
                 return RedirectToAction("Index", "User");
-
             }
-
-            ModelState.AddModelError("", "Invalid Username or Password");
+            else
+            {
+                ModelState.AddModelError("", "Invalid Username or Password");
+            }
             return View();
         }
 
@@ -90,6 +92,7 @@ namespace UserManagement_MVC.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Delete(Guid Id)
         {
@@ -103,6 +106,15 @@ namespace UserManagement_MVC.Controllers
         {
             HttpContext.Session.Clear();
             return Redirect("~/User/Login");
+        }
+
+        [HttpGet]
+        public IActionResult GetCurrentUser()
+        {
+
+            var res = _httpContextAccessor.HttpContext.User.FindFirst("UserName");
+
+            return Ok(res);
         }
     }
 }

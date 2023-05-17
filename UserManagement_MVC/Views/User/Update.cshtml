@@ -4,7 +4,7 @@
 }
 <h1>Update User</h1>
 
-<form  method="post" action="Update" class="mt-5">
+<form name="updateForm" method="post" action="Update" class="mt-5" >
 
   <div class="mb-3">
       <label for="" class="form-label">Id</label>
@@ -16,7 +16,7 @@
     <input type="text" class="form-control" asp-for="UserName" readonly>  
   </div>
 
-   <div class="mb-3">
+  <div class="mb-3">
     <label for="" class="form-label">First Name</label>
     <input type="text" class="form-control" asp-for="FirstName">
   </div>
@@ -31,6 +31,17 @@
     <input type="text" class="form-control" asp-for="Email">
   </div>
 
+  <div class="mb-3">
+    <label for="" class="form-label" >Role</label>
+    <select name="Role" class="form-control" id="Role" asp-for="Role">
+         <option value="" disabled selected hidden>@Model.Role</option>
+         <option value="Admin" >Admin</option>
+         <option value="User" >User</option>
+    </select>
+  </div>
+
   <button type="submit" class="btn btn-primary">Update</button>
 
 </form>
+
+

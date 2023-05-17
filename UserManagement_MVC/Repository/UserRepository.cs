@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -12,25 +13,25 @@ using UserManagement_MVC.Models.Responses;
 namespace UserManagement_MVC.Repository
 {
     public class UserRepository : IUserRepository
-    {
+    {     
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _configuration;
-
+        
         public UserRepository(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _configuration = configuration;
+         
         }
 
         public async Task<RegisterUserResponse> Register(RegisterUserModel userModel)
         {
             var userFetch = await _userManager.FindByEmailAsync(userModel.Email);
-
+            
             if (userFetch != null)
             {
-
                 return new RegisterUserResponse
                 {
                     IsSuccess = false,
@@ -85,7 +86,8 @@ namespace UserManagement_MVC.Repository
                 var authClaims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, userFetch.UserName),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    
                 };
 
                 foreach (var userrole in userRole)
@@ -126,8 +128,10 @@ namespace UserManagement_MVC.Repository
 
         public async Task<UpdateUserModel> Update(Guid Id)
         {
-            string sId = Id.ToString();
-            var userFetch = await _userManager.Users.FirstOrDefaultAsync(e => e.Id == sId);
+            //string sId = Id.ToString();
+            var userFetch = await _userManager.Users.FirstOrDefaultAsync(e => e.Id == Id.ToString() );
+            var roleFetch = await _userManager.GetRolesAsync(userFetch);
+            var roleName = roleFetch.FirstOrDefault();
             
             if (userFetch != null)
             {
@@ -138,7 +142,7 @@ namespace UserManagement_MVC.Repository
                     FirstName = userFetch.FirstName,
                     LastName = userFetch.LastName,
                     Email = userFetch.Email,
-
+                    Role = roleName
                 };
 
                 return updateUserModel;
@@ -149,7 +153,11 @@ namespace UserManagement_MVC.Repository
         public async Task<bool> Update(UpdateUserModel updateUserModel)
         {
             var userFetch = await _userManager.FindByIdAsync(updateUserModel.Id);
+            var roleFetch = await _userManager.GetRolesAsync(userFetch);
+            var roleName = roleFetch.FirstOrDefault();
 
+
+           
             if (userFetch != null)
             {
                 userFetch.Id = updateUserModel.Id;
@@ -158,6 +166,14 @@ namespace UserManagement_MVC.Repository
                 userFetch.LastName = updateUserModel.LastName;
                 userFetch.Email = updateUserModel.Email;
 
+
+
+                if (roleName != updateUserModel.Role)
+                {
+                     await _userManager.RemoveFromRoleAsync(userFetch, roleName);
+                     await _userManager.AddToRoleAsync(userFetch, updateUserModel.Role);
+                    
+                }
                 await _userManager.UpdateAsync(userFetch);
 
                 return true;

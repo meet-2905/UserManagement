@@ -93,3 +93,5 @@ D:\Meet\C#\MVC\UserManagement_MVC\UserManagement_MVC\obj\Debug\net6.0\refint\Use
 D:\Meet\C#\MVC\UserManagement_MVC\UserManagement_MVC\obj\Debug\net6.0\UserManagement_MVC.pdb
 D:\Meet\C#\MVC\UserManagement_MVC\UserManagement_MVC\obj\Debug\net6.0\UserManagement_MVC.genruntimeconfig.cache
 D:\Meet\C#\MVC\UserManagement_MVC\UserManagement_MVC\obj\Debug\net6.0\ref\UserManagement_MVC.dll
+D:\Meet\C#\MVC\UserManagement_MVC\UserManagement_MVC\bin\Debug\net6.0\WebMatrix.Data.dll
+D:\Meet\C#\MVC\UserManagement_MVC\UserManagement_MVC\bin\Debug\net6.0\WebMatrix.WebData.dll
