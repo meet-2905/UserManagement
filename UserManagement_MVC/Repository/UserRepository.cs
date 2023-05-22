@@ -50,7 +50,6 @@ namespace UserManagement_MVC.Repository
             {
                 var result = await _userManager.CreateAsync(newUser, userModel.Password);
 
-
                 if (!result.Succeeded)
                 {
                     return new RegisterUserResponse
@@ -83,11 +82,15 @@ namespace UserManagement_MVC.Repository
             if (userFetch != null && await _userManager.CheckPasswordAsync(userFetch, loginUserModel.Password))
             {
                 var userRole = await _userManager.GetRolesAsync(userFetch);
+                //var IdClaims = new IEnumerable<ClaimsIdentity>
+                //{
+                //    new ClaimsIdentity(ClaimTypes.Name,  userFetch.UserName),
+
+                //}
                 var authClaims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, userFetch.UserName),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),                   
                 };
 
                 foreach (var userrole in userRole)
@@ -98,8 +101,7 @@ namespace UserManagement_MVC.Repository
                 var jwtToken = GetToken(authClaims);
 
                 string token = new JwtSecurityTokenHandler().WriteToken(jwtToken);
-
-                
+               
                 return new LoginUserResponse { IsSuccess = true, Message="Successful Login", jwtToken=token};
             }
             return new LoginUserResponse { IsSuccess = false, Message = "Username Not Found"}; 
@@ -128,7 +130,6 @@ namespace UserManagement_MVC.Repository
 
         public async Task<UpdateUserModel> Update(Guid Id)
         {
-            //string sId = Id.ToString();
             var userFetch = await _userManager.Users.FirstOrDefaultAsync(e => e.Id == Id.ToString() );
             var roleFetch = await _userManager.GetRolesAsync(userFetch);
             var roleName = roleFetch.FirstOrDefault();
@@ -155,9 +156,7 @@ namespace UserManagement_MVC.Repository
             var userFetch = await _userManager.FindByIdAsync(updateUserModel.Id);
             var roleFetch = await _userManager.GetRolesAsync(userFetch);
             var roleName = roleFetch.FirstOrDefault();
-
-
-           
+          
             if (userFetch != null)
             {
                 userFetch.Id = updateUserModel.Id;
@@ -166,13 +165,10 @@ namespace UserManagement_MVC.Repository
                 userFetch.LastName = updateUserModel.LastName;
                 userFetch.Email = updateUserModel.Email;
 
-
-
                 if (roleName != updateUserModel.Role)
                 {
                      await _userManager.RemoveFromRoleAsync(userFetch, roleName);
-                     await _userManager.AddToRoleAsync(userFetch, updateUserModel.Role);
-                    
+                     await _userManager.AddToRoleAsync(userFetch, updateUserModel.Role);               
                 }
                 await _userManager.UpdateAsync(userFetch);
 

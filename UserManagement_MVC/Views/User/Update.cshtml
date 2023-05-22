@@ -1,47 +1,64 @@
 ﻿@model UserManagement_MVC.Models.UpdateUserModel
-
 @{
 }
 <h1>Update User</h1>
 
-<form name="updateForm" method="post" action="Update" class="mt-5" >
 
-  <div class="mb-3">
-      <label for="" class="form-label">Id</label>
-      <input type="text" class="form-control" asp-for="Id" readonly>  
-  </div>
+<main>
+    <div class="container">
 
-  <div class="mb-3">
-    <label for="" class="form-label">Username</label>
-    <input type="text" class="form-control" asp-for="UserName" readonly>  
-  </div>
+      <section class="section register d-flex flex-column align-items-center justify-content-center py-4">
+        <div class="container">
+         
 
-  <div class="mb-3">
-    <label for="" class="form-label">First Name</label>
-    <input type="text" class="form-control" asp-for="FirstName">
-  </div>
+                  <form class="row g-3 needs-validation" asp-controller="User" asp-action="Update" novalidate>
 
-  <div class="mb-3">
-    <label for="" class="form-label">Last Name</label>
-    <input type="text" class="form-control" asp-for="LastName">
-  </div>
+                     <div class="col-12">
+                      <label for="Id" class="form-label">Id</label>
+                      <input type="text" name="Id" style="background-color: rgb(229, 226, 226) !important;"class="form-control" id="Id" asp-for="Id" readonly>
+                     
+                    </div>
 
-  <div class="mb-3">
-    <label for="" class="form-label">Email Address</label>
-    <input type="text" class="form-control" asp-for="Email">
-  </div>
+                    <div class="col-12">
+                      <label for="UserName" class="form-label">Username</label>
+                      <input type="text" name="UserName" style="background-color: rgb(229, 226, 226)!important;" class="form-control" id="UserName" asp-for="UserName" readonly>
+                    </div>
 
-  <div class="mb-3">
-    <label for="" class="form-label" >Role</label>
-    <select name="Role" class="form-control" id="Role" asp-for="Role">
-         <option value="" disabled selected hidden>@Model.Role</option>
-         <option value="Admin" >Admin</option>
-         <option value="User" >User</option>
-    </select>
-  </div>
+                    <div class="col-12">
+                      <label for="FirstName" class="form-label">First Name</label>
+                      <input type="text" name="FirstName" class="form-control" id="FirstName" asp-for="FirstName" />       
+                    </div>
 
-  <button type="submit" class="btn btn-primary">Update</button>
+                    <div class="col-12">
+                      <label for="LastName" class="form-label">Last Name</label>
+                      <input type="text" name="LastName" class="form-control" id="LastName" asp-for="LastName">                  
+                    </div>
 
-</form>
+                    <div class="col-12">
+                      <label for="Email" class="form-label">Email</label>
+                      <input type="email" name="email" class="form-control" id="Email" asp-for="Email">
+                    </div>
+ 
+                     <div class="col-12">
+                        <label for="" class="form-label" >Role</label>
+                        <select name="Role" class="form-select" asp-for="Role" aria-label="Default select example">
 
+                          <option value="" disabled selected hidden> Select Role</option>
+                          <option value="Admin">Admin</option>
+                          <option value="User">User</option>
 
+                        </select>
+                      </div>
+               
+                  </form>
+
+                   <button  style="margin-top : 15px" type="submit" class="btn btn-primary">Update</button>
+
+            </div>
+          
+        </div>
+
+      </section>
+
+    </div>
+  </main>

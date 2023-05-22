@@ -43,8 +43,5 @@ namespace UserManagement_MVC.Services
         {
             return  await _userRepository.Delete(Id);
         }
-
-
-
     }
 }

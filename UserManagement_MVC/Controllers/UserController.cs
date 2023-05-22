@@ -54,6 +54,10 @@ namespace UserManagement_MVC.Controllers
                 //HttpContext.Session.SetString("JWToken", loginUserResponse.jwtToken);
                 _httpContextAccessor.HttpContext.Session.SetString("JWToken", loginUserResponse.jwtToken);
 
+                //_httpContextAccessor.HttpContext.User.AddIdentities.Add(loginUserResponse.jwtToken);
+
+                //_httpContextAccessor.HttpContext.User.AddIdentity.Add(loginUserResponse.jwtToken);
+
                 return RedirectToAction("Index", "User");
             }
             else
@@ -105,14 +109,13 @@ namespace UserManagement_MVC.Controllers
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
-            return Redirect("~/User/Login");
+            return RedirectToAction("Login");
         }
 
         [HttpGet]
         public IActionResult GetCurrentUser()
         {
-
-            var res = _httpContextAccessor.HttpContext.User.FindFirst("UserName");
+            var res = _httpContextAccessor.HttpContext.User;
 
             return Ok(res);
         }
